@@ -1,4 +1,4 @@
-name名称: Test Email Notification
+name: Test Email Notification
 
 on:
   workflow_dispatch: # 允许你手动在网页上点击运行
@@ -9,26 +9,26 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: I我我nstall dependencies    - name: 安安装依赖 - 名称: 安装依赖项 - 名称: 安装依赖项 - 名称: 安装依赖    - name: 安装依赖项 - name: 安装依赖项 - 名称: 安装依赖项 - 名称: 安装依赖
-      run运行运行运行运行运行运行运行运行运行运行: |
+    - name: Install dependencies
+      run: |
         curl -LsSf https://astral.sh/uv/install.sh | sh
         uv sync
 
-    - name: Setup test variables    - name: 设置测试变量    - 名称: S设置测试变量 - 名称: 设置测试变量    - name: 设置测试变量 - 名称: 设置测试变量 - 名称: 设置测试变量 - 名称: S设置测试变量 - 名称: 设置测试变量-name:设置测试变量-名称:设置测试变量    - 名称设置测试变量    - 名称S设置测试变量 - 名称设置测试变量    - 名称设置测试变量
-      id: test_setup测试设置
+    - name: Setup test variables
+      id: test_setup
       run: |
         today=$(date -u "+%Y-%m-%d")
         echo "crawl_date=$today" >> $GITHUB_OUTPUT
         echo "准备测试发送邮件，日期：$today"
 
-    - name: Send email notification    - name: 发送电子邮件通知 - name: 发结束电子邮件通知 - 名称: 发送电子邮件通知 - 名称: 发送电子邮件通知    - name: 发送电子邮件通知 - 名称: 发送电子邮件通知 - 名称:     - 名称: end email notification    - name: 结束电子邮件通知 - 名称: 送电子邮件通知    - name:     发送电子邮件通知 - 名称:     - name: 发送电子邮件通知 - 名称: 发送电子邮件通知 - 名称: 发送电子邮件通知 - 名称: 发送电子邮件通知 - 名称: 发送电子邮件通知 - 名称:     - 名称: 结束电子邮件通知 - 名称: 送电子邮件通知 - 名称: end email notification    - name送电子邮件通知    - name发送电子邮件通知
+    - name: Send email notification
       env:
         SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
         SMTP_PORT: ${{ secrets.SMTP_PORT }}
         SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
         SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
         EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
-        EMAIL_RECIPIENTS: ${{ secrets.EMAIL_RECIPIENTS }}电子邮件收件人: ${{secrets.EMAIL_RECIPIENTS}}电子邮件收件人: ${{secrets.EMAIL_RECIPIENTS}}电子邮件收件人: ${{secrets.EMAIL_RECIPIENTS}}
+        EMAIL_RECIPIENTS: ${{ secrets.EMAIL_RECIPIENTS }}
         # 即使你没有在 variables 里配置 GITHUB_PAGES_URL，我们这里也硬编码一个以便测试
         GITHUB_PAGES_URL: "https://love-luo-tianyi.github.io/daily-arXiv-ai-enhanced/"
         EMAIL_DATE: ${{ steps.test_setup.outputs.crawl_date }}
@@ -38,7 +38,7 @@ jobs:
         
         # 检查必要的 secrets 是否已配置
         if [ -z "$SMTP_SERVER" ] || [ -z "$SMTP_PASSWORD" ] || [ -z "$EMAIL_RECIPIENTS" ]; then
-          echo "⚠️  邮件通知所需的 Secrets 未完整配置，跳过发��� / Email secrets not fully configured, skipping"echo "⚠️ 邮件通知所需的 Secrets 未完整配置，跳过发 / Email secrets not fully configured, skipping"echo "⚠️ 邮件通知所需的 Secrets 未完整配置，跳过发 / Email secrets not fully configured, skipping"echo "⚠️ 邮件通知所需的 Secrets 未完整配置，跳过发 / Email secrets not fully configured, skipping"echo “⚠️ 邮件通知所需的 Secrets 未完整配置，跳过发送 / Email secrets not fully configured, skipping”echo “⚠️ 邮件通知所需的 Secrets 未完整配置，跳过发送 / Email secrets not fully configured, skipping”echo “⚠️ 邮件通知所需的 Secrets 未完整配置，跳过发送 / Email secrets not fully configured, skipping”echo “⚠️ 邮件通知所需的 Secrets 未完整配置，跳过发送 / Email secrets not fully configured, skipping”echo "⚠️ 邮件通知所需的 Secrets 未完整配置，跳过发送 / Email secrets not fully configured, skipping"echo "⚠️ 邮件通知所需的 Secrets 未完整配置，跳过发送 / Email secrets not fully configured, skipping"echo "⚠️ 邮件通知所需的 Secrets 未完整配置，跳过发送 / Email secrets not fully configured, skipping"echo "⚠️ 邮件通知所需的 Secrets 未完整配置，跳过发送 / Email secrets not fully configured, skipping"echo “⚠️ 邮件通知所需的 Secrets 未完整配置，跳过发送 / Email secrets not fully configured, skipping”echo “⚠️ 邮件通知所需的 Secrets 未完整配置，跳过发送 / Email secrets not fully configured, skipping”echo “⚠️ 邮件通知所需的 Secrets 未完整配置，跳过发送 / Email secrets not fully configured, skipping”echo “⚠️ 邮件通知所需的 Secrets 未完整配置，跳过发送 / Email secrets not fully configured, skipping”echo "⚠️ 邮件通知所需的 Secrets 未完整配置，跳过发送 / Email secrets not fully configured, skipping"echo "⚠️ 邮件通知所需的 Secrets 未完整配置，跳过发送 / Email secrets not fully configured, skipping"echo "⚠️ 邮件通知所需的 Secrets 未完整配置，跳过发送 / Email secrets not fully configured, skipping"echo "⚠️ 邮件通知所需的 Secrets 未完整配置，跳过发送 / Email secrets not fully configured, skipping"echo “⚠️ 邮件通知所需的 Secrets 未完整配置，跳过发送 / Email secrets not fully configured, skipping”echo “⚠️ 邮件通知所需的 Secrets 未完整配置，跳过发送 / Email secrets not fully configured, skipping”echo “⚠️ 邮件通知所需的 Secrets 未完整配置，跳过发送 / Email secrets not fully configured, skipping”echo “⚠️ 邮件通知所需的 Secrets 未完整配置，跳过发送 / Email secrets not fully configured, skipping”echo "⚠️ 邮件通知所需的 Secrets 未完整配置，跳过发送 / Email secrets not fully configured, skipping"echo "⚠️ 邮件通知所需的 Secrets 未完整配置，跳过发送 / Email secrets not fully configured, skipping"echo "⚠️ 邮件通知所需的 Secrets 未完整配置，跳过发送 / Email secrets not fully configured, skipping"echo "⚠️ 邮件通知所需的 Secrets 未完整配置，跳过发送 / Email secrets not fully configured, skipping"echo “⚠️ 邮件通知所需的 Secrets 未完整配置，跳过发送 / Email secrets not fully configured, skipping”echo “⚠️ 邮件通知所需的 Secrets 未完整配置，跳过发送 / Email secrets not fully configured, skipping”echo “⚠️ 邮件通知所需的 Secrets 未完整配置，跳过发送 / Email secrets not fully configured, skipping”echo “⚠️ 邮件通知所需的 Secrets 未完整配置，跳过发送 / Email secrets not fully configured, skipping”
+          echo "⚠️  邮件通知所需的 Secrets 未完整配置，跳过发送 / Email secrets not fully configured, skipping"
           exit 1 # 测试环境我们让它直接报错，这样你能很明显地看到问题
         fi
         
