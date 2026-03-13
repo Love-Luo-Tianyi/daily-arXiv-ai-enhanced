@@ -57,6 +57,33 @@ Otherwise, you can directly use this repo in https://dw-dengwei.github.io/daily-
 9. You can manually click **Run workflow** to test if it works well (it may take about one hour). By default, this action will automatically run every day. You can modify it in `.github/workflows/run.yml`
 10. Set up GitHub pages: Go to your own repo -> Settings -> Pages. In `Build and deployment`, set `Source="Deploy from a branch"`, `Branch="main", "/(root)"`. Wait for a few minutes, go to https://\<username\>.github.io/daily-arXiv-ai-enhanced/. Please see this [issue](https://github.com/dw-dengwei/daily-arXiv-ai-enhanced/issues/14) for more precise instructions.
 
+## 📧 Email Notification (Optional)
+
+You can configure the workflow to send a daily email reminder with a link to your GitHub Pages site.
+
+**Step 1 – Add the following Secrets** (`Settings → Secrets and variables → Actions → Secrets`):
+
+| Secret | Description |
+|---|---|
+| `SMTP_SERVER` | SMTP server hostname, e.g. `smtp.gmail.com` |
+| `SMTP_PORT` | SMTP port, e.g. `587` (STARTTLS) |
+| `SMTP_USERNAME` | Login username for the SMTP server |
+| `SMTP_PASSWORD` | Login password or app-specific password |
+| `EMAIL_SENDER` | The "From" address, e.g. `you@gmail.com` |
+| `EMAIL_RECIPIENTS` | Comma-separated recipient addresses, e.g. `a@x.com,b@x.com` |
+
+**Step 2 – Add the following Variable** (`Settings → Secrets and variables → Actions → Variables`):
+
+| Variable | Description |
+|---|---|
+| `GITHUB_PAGES_URL` | Full URL of your GitHub Pages site, e.g. `https://<username>.github.io/daily-arXiv-ai-enhanced/` |
+
+Once configured, the workflow will automatically send a beautifully formatted HTML email each day after new paper summaries are published.
+
+> **Gmail users:** Enable 2-Step Verification and create an [App Password](https://myaccount.google.com/apppasswords) to use as `SMTP_PASSWORD`.
+>
+> **Note:** If the email secrets are not configured, the workflow will skip the email step without failing.
+
 # Plans
 See https://github.com/users/dw-dengwei/projects/3
 

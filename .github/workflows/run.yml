@@ -247,3 +247,29 @@ jobs:
             fi
           fi
         done
+
+    - name: Send email notification
+      if: steps.dedup_check.outputs.has_new_content == 'true' && vars.GITHUB_PAGES_URL != ''
+      env:
+        SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+        SMTP_PORT: ${{ secrets.SMTP_PORT }}
+        SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+        SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+        EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+        EMAIL_RECIPIENTS: ${{ secrets.EMAIL_RECIPIENTS }}
+        GITHUB_PAGES_URL: ${{ vars.GITHUB_PAGES_URL }}
+        EMAIL_DATE: ${{ steps.crawl_step.outputs.crawl_date }}
+      run: |
+        source .venv/bin/activate
+        echo "📧 发送每日邮件通知... / Sending daily email notification..."
+        
+        # 检查必要的 secrets 是否已配置 / Check if required secrets are set
+        if [ -z "$SMTP_SERVER" ] || [ -z "$SMTP_PASSWORD" ] || [ -z "$EMAIL_RECIPIENTS" ]; then
+          echo "⚠️  邮件通知所需的 Secrets 未完整配置，跳过发送 / Email secrets not fully configured, skipping"
+          echo "ℹ️  如需启用邮件推送，请在仓库 Secrets 中配置以下变量："
+          echo "    SMTP_SERVER, SMTP_PORT, SMTP_USERNAME, SMTP_PASSWORD, EMAIL_SENDER, EMAIL_RECIPIENTS"
+          echo "    并在仓库 Variables 中配置 GITHUB_PAGES_URL"
+          exit 0
+        fi
+        
+        python send_email.py || echo "⚠️  邮件发送失败，但不影响主流程 / Email sending failed, main workflow unaffected"
