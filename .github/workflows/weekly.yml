@@ -1,0 +1,104 @@
+# Weekly arXiv summary workflow
+# Runs every Monday morning and generates a Map-Reduce style weekly summary
+
+name: arXiv-weekly-summary
+
+on:
+  schedule:
+    # Every Monday at 03:00 UTC.
+    # The daily workflow (run.yml) is scheduled for 01:30 UTC, so by 03:00 the
+    # Monday papers should already be committed.  If you change the daily schedule,
+    # update this cron accordingly.
+    - cron: "0 3 * * 1"
+  workflow_dispatch:
+    inputs:
+      week_start:
+        description: "Week start date (YYYY-MM-DD, defaults to last Monday)"
+        required: false
+        type: string
+
+jobs:
+  weekly-summary:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        uv sync
+
+    - name: Generate weekly summary
+      run: |
+        source .venv/bin/activate
+        echo "📊 Generating weekly arXiv summary..."
+
+        cd ai
+        export OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+        export OPENAI_BASE_URL=${{ secrets.OPENAI_BASE_URL }}
+        export LANGUAGE="${{ vars.LANGUAGE }}"
+        export MODEL_NAME="${{ vars.MODEL_NAME }}"
+
+        WEEK_ARG=""
+        if [ -n "${{ github.event.inputs.week_start }}" ]; then
+          WEEK_ARG="--week_start ${{ github.event.inputs.week_start }}"
+        fi
+
+        python weekly_summary.py \
+          --data_dir ../data \
+          --output_dir ../data/weekly \
+          $WEEK_ARG
+
+        echo "✅ Weekly summary generation completed"
+
+    - name: Commit and push weekly summary
+      run: |
+        git config --global user.email "${{ vars.EMAIL }}"
+        git config --global user.name "${{ vars.NAME }}"
+
+        # Update reports-list.json
+        python3 -c "
+import os, json
+
+def list_reports(path, ext='.md'):
+    if not os.path.isdir(path):
+        return []
+    return sorted([f for f in os.listdir(path) if f.endswith(ext) and f != '.gitkeep'], reverse=True)
+
+weekly = list_reports('data/weekly')
+monthly = list_reports('data/monthly')
+wordclouds = list_reports('assets', '.png')
+wordclouds = [f for f in wordclouds if f.startswith('wordcloud-')]
+data = {'weekly': weekly, 'monthly': monthly, 'wordclouds': wordclouds}
+with open('assets/reports-list.json', 'w') as f:
+    json.dump(data, f, indent=2)
+print('reports-list.json updated')
+"
+
+        git add data/weekly/ assets/reports-list.json
+        if git diff --staged --quiet; then
+          echo "No new weekly summary to commit"
+          exit 0
+        fi
+        git commit -m "update: weekly summary $(date -u '+%Y-W%V')"
+
+    - name: Pull latest changes and push
+      run: |
+        git config pull.rebase true
+        git config rebase.autoStash true
+        for i in {1..3}; do
+          echo "Push attempt $i"
+          if git push origin main; then
+            echo "Push successful"
+            break
+          else
+            git pull origin main --no-edit || true
+            if [ $i -eq 3 ]; then
+              echo "Failed to push after 3 attempts"
+              exit 1
+            fi
+          fi
+        done

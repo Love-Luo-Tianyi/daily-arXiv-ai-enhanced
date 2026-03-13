@@ -1,0 +1,420 @@
+.reports-page {
+    padding: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.reports-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.reports-header {
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.reports-header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.reports-header p {
+    color: var(--text-secondary);
+    font-size: 16px;
+}
+
+/* Tabs */
+.reports-tabs {
+    display: flex;
+    gap: 8px;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 0;
+}
+
+.tab-button {
+    padding: 10px 24px;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+    bottom: -2px;
+    border-bottom: 2px solid transparent;
+}
+
+.tab-button:hover {
+    color: var(--primary-color);
+    background: rgba(102, 126, 234, 0.05);
+}
+
+.tab-button.active {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+    font-weight: 600;
+}
+
+/* Two-panel layout */
+.reports-body {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 20px;
+    align-items: start;
+    min-height: 500px;
+}
+
+/* Report list panel */
+.report-list-panel {
+    background-color: var(--card-bg-color);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    position: sticky;
+    top: 20px;
+    max-height: calc(100vh - 180px);
+    display: flex;
+    flex-direction: column;
+}
+
+.report-list-title {
+    padding: 14px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-color);
+    background: rgba(102, 126, 234, 0.03);
+    flex-shrink: 0;
+}
+
+.report-list-scroll {
+    overflow-y: auto;
+    flex: 1;
+}
+
+.report-list-scroll::-webkit-scrollbar {
+    width: 4px;
+}
+
+.report-list-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.report-list-scroll::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 2px;
+}
+
+.report-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-color);
+    transition: var(--transition);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.report-item:last-child {
+    border-bottom: none;
+}
+
+.report-item:hover {
+    background: rgba(102, 126, 234, 0.06);
+    color: var(--primary-color);
+}
+
+.report-item.active {
+    background: rgba(102, 126, 234, 0.1);
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.report-item-icon {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    color: var(--text-secondary);
+}
+
+.report-item.active .report-item-icon {
+    color: var(--primary-color);
+}
+
+/* Report viewer panel */
+.report-viewer-panel {
+    background-color: var(--card-bg-color);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    min-height: 500px;
+    overflow: hidden;
+}
+
+.report-viewer-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 500px;
+    gap: 16px;
+    color: var(--text-secondary);
+}
+
+.report-viewer-placeholder svg {
+    width: 64px;
+    height: 64px;
+    opacity: 0.3;
+}
+
+.report-viewer-placeholder p {
+    font-size: 15px;
+}
+
+/* Markdown body styles */
+.markdown-body {
+    padding: 32px 40px;
+    line-height: 1.75;
+    color: var(--text-color);
+}
+
+.markdown-body h1 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border-color);
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.markdown-body h2 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-top: 32px;
+    margin-bottom: 16px;
+    color: var(--text-color);
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.markdown-body h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 24px;
+    margin-bottom: 12px;
+    color: var(--text-color);
+}
+
+.markdown-body p {
+    margin-bottom: 16px;
+}
+
+.markdown-body ul,
+.markdown-body ol {
+    margin-bottom: 16px;
+    padding-left: 24px;
+}
+
+.markdown-body li {
+    margin-bottom: 6px;
+}
+
+.markdown-body strong {
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.markdown-body em {
+    font-style: italic;
+    color: var(--text-secondary);
+}
+
+.markdown-body hr {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 24px 0;
+}
+
+.markdown-body code {
+    background: rgba(102, 126, 234, 0.08);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+}
+
+.markdown-body pre {
+    background: #f6f8fa;
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    overflow-x: auto;
+    margin-bottom: 16px;
+}
+
+.markdown-body pre code {
+    background: transparent;
+    padding: 0;
+}
+
+.markdown-body blockquote {
+    border-left: 4px solid var(--primary-color);
+    padding-left: 16px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+}
+
+.markdown-body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-size: 14px;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+}
+
+.markdown-body table th {
+    background: rgba(102, 126, 234, 0.08);
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.markdown-body table th:first-child {
+    border-radius: var(--radius-sm) 0 0 0;
+}
+
+.markdown-body table th:last-child {
+    border-radius: 0 var(--radius-sm) 0 0;
+}
+
+.markdown-body table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.markdown-body table tr:last-child td {
+    border-bottom: none;
+}
+
+.markdown-body table tr:hover td {
+    background: rgba(102, 126, 234, 0.03);
+}
+
+.markdown-body img {
+    max-width: 100%;
+    border-radius: var(--radius-md);
+    margin: 16px 0;
+    box-shadow: var(--shadow-md);
+}
+
+.markdown-body a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.markdown-body a:hover {
+    text-decoration: underline;
+}
+
+/* Status messages */
+.status-loading,
+.status-error,
+.status-empty {
+    padding: 40px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.status-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.status-loading::before {
+    content: '';
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--border-color);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+.status-error {
+    color: #e74c3c;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Back button style (reused from statistic.css) */
+.back-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    border-radius: var(--radius-sm);
+    color: var(--primary-color);
+    transition: var(--transition);
+    text-decoration: none !important;
+}
+
+.back-button:hover {
+    background-color: var(--background-hover);
+    transform: translateX(-2px);
+}
+
+.back-button svg {
+    width: 24px;
+    height: 24px;
+    color: var(--primary-color);
+    fill: currentColor;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .reports-page {
+        padding: 16px;
+    }
+
+    .reports-body {
+        grid-template-columns: 1fr;
+    }
+
+    .report-list-panel {
+        position: static;
+        max-height: 220px;
+    }
+
+    .markdown-body {
+        padding: 20px;
+    }
+}

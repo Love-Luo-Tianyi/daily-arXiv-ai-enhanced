@@ -3,18 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="daily arxiv ai-enhanced statistics">
-    <title>Statistics - Daily arXiv AI Enhanced</title>
+    <meta name="description" content="daily arxiv ai-enhanced weekly and monthly reports">
+    <title>Reports - Daily arXiv AI Enhanced</title>
     <link rel="icon" type="image/png" href="assets/logo2-removebg-preview.png">
     <link rel="shortcut icon" type="image/png" href="assets/logo2-removebg-preview.png">
     <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/statistic.css">
+    <link rel="stylesheet" href="css/reports.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/jasondavies/d3-cloud/build/d3.layout.cloud.js"></script>
-    <script src="https://unpkg.com/compromise@14.14.4/builds/compromise.js"></script>
 
     <!-- Authentication Scripts -->
     <script src="js/auth-config.js"></script>
@@ -58,31 +53,16 @@
                         </div>
                     </a>
                 </div>
-                
+
                 <div class="header-center">
                     <a href="index.html" class="site-logo">
                         <img src="assets/logo2-removebg-preview.png" alt="Daily arXiv AI Enhanced Logo" class="logo-image">
                         <span class="site-title">Daily arXiv AI Enhanced</span>
                     </a>
                 </div>
-                
+
                 <div class="header-controls">
-                    <div class="date-selector">
-                        <div class="date-display">
-                            <span id="currentDate">Loading...</span>
-                            <button id="calendarButton" class="icon-button">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M19 4H18V2H16V4H8V2H6V4H5C3.89 4 3.01 4.9 3.01 6L3 20C3 21.1 3.89 22 5 22H19C20.1 22 21 21.1 21 20V6C21 4.9 20.1 4 19 4ZM19 20H5V9H19V20ZM7 11H12V16H7V11Z" fill="currentColor"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                    <a href="reports.html" class="icon-button" title="Reports">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2ZM18 20H6V4H13V9H18V20ZM9 13H15V15H9V13ZM9 17H15V19H9V17ZM9 9H12V11H9V9Z" fill="currentColor"/>
-                        </svg>
-                    </a>
-                    <a href="index.html" class="back-button">
+                    <a href="index.html" class="back-button" title="Back to Home">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M20 11H7.83L13.42 5.41L12 4L4 12L12 20L13.41 18.59L7.83 13H20V11Z" fill="currentColor"/>
                         </svg>
@@ -96,39 +76,46 @@
             </div>
         </header>
 
-        <main class="statistics-page">
-            <div class="statistics-container">
-                <div class="statistics-header">
-                    <h1>Statistics</h1>
-                    <p>Analyze paper trends and popular topics</p>
+        <main class="reports-page">
+            <div class="reports-container">
+                <div class="reports-header">
+                    <h1>Reports</h1>
+                    <p>Weekly and monthly AI-generated research trend reports with word clouds</p>
                 </div>
 
-                <div class="statistics-content">
-                    <div class="date-picker-modal" id="datePickerModal">
-                        <div class="date-picker-content">
-                            <div class="date-picker-body">
-                                <h3 class="date-picker-title">Select Date</h3>
-                                <div class="flatpickr-container">
-                                    <input type="text" id="datepicker" placeholder="Select Date" data-input>
-                                </div>
-                                <div class="date-range-selector">
-                                    <span class="toggle-label">Range</span>
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" id="dateRangeMode">
-                                        <span class="toggle-slider"></span>
-                                    </label>
-                                </div>
-                            </div>
+                <!-- Tabs -->
+                <div class="reports-tabs">
+                    <button class="tab-button active" data-tab="weekly">
+                        📅 Weekly Reports
+                    </button>
+                    <button class="tab-button" data-tab="monthly">
+                        📈 Monthly Reports
+                    </button>
+                </div>
+
+                <!-- Two-panel layout -->
+                <div class="reports-body">
+                    <!-- Left: report list -->
+                    <div class="report-list-panel">
+                        <div class="report-list-title">Available Reports</div>
+                        <div class="report-list-scroll" id="reportListScroll">
+                            <div class="status-loading">Loading reports...</div>
                         </div>
                     </div>
 
-                    <div id="papersList">
-                        <!-- Paper statistics will be dynamically inserted here -->
+                    <!-- Right: report viewer -->
+                    <div class="report-viewer-panel" id="reportViewer">
+                        <div class="report-viewer-placeholder">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2ZM18 20H6V4H13V9H18V20ZM9 13H15V15H9V13ZM9 17H15V19H9V17ZM9 9H12V11H9V9Z" fill="currentColor"/>
+                            </svg>
+                            <p>Select a report from the list to view it</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </main>
-        
+
         <footer>
             <div class="footer-content">
                 <p>&copy; 2025 daily-arXiv-ai-enhanced | <a href="https://github.com/dw-dengwei/daily-arXiv-ai-enhanced" target="_blank">GitHub</a></p>
@@ -136,21 +123,7 @@
         </footer>
     </div>
 
-    <div id="paperSidebar" class="paper-sidebar">
-        <div class="sidebar-header">
-            <div class="header-content">
-                <h3 id="selectedKeyword"></h3>
-            </div>
-            <button class="close-sidebar">&times;</button>
-        </div>
-        <div class="sidebar-content">
-            <div id="relatedPapers" class="related-papers">
-                <!-- Papers will be dynamically inserted here -->
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="js/statistic.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="js/reports.js"></script>
 </body>
-</html> 
+</html>
