@@ -51,7 +51,10 @@ def get_week_dates(week_start_str: str = None) -> Tuple[List[str], datetime]:
         start = datetime.strptime(week_start_str, "%Y-%m-%d")
     else:
         today = datetime.utcnow()
-        # Last completed Monday (go back to last week's Monday)
+        # Always target the *previous* full week (Mon–Sun).
+        # today.weekday() is 0 on Monday, 6 on Sunday.
+        # Adding 7 ensures we go back to the Monday of last week regardless
+        # of which day of the current week today falls on.
         days_since_monday = today.weekday()
         start = today - timedelta(days=days_since_monday + 7)
     dates = [(start + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)]

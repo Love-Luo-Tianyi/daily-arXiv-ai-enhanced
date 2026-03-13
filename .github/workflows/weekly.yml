@@ -5,7 +5,10 @@ name: arXiv-weekly-summary
 
 on:
   schedule:
-    # Every Monday at 03:00 UTC (after the daily workflow has run)
+    # Every Monday at 03:00 UTC.
+    # The daily workflow (run.yml) is scheduled for 01:30 UTC, so by 03:00 the
+    # Monday papers should already be committed.  If you change the daily schedule,
+    # update this cron accordingly.
     - cron: "0 3 * * 1"
   workflow_dispatch:
     inputs:
@@ -17,6 +20,8 @@ on:
 jobs:
   weekly-summary:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
     - uses: actions/checkout@v4

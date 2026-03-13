@@ -35,13 +35,27 @@ if os.path.exists('.env'):
 # Optional: word cloud generation
 try:
     from wordcloud import WordCloud
+    _wc_import_error = None
+except ImportError as e:
+    WordCloud = None  # type: ignore[assignment,misc]
+    _wc_import_error = f"wordcloud: {e}"
+
+try:
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    WORDCLOUD_AVAILABLE = True
-except ImportError:
-    WORDCLOUD_AVAILABLE = False
-    print("wordcloud/matplotlib not installed; skipping word cloud generation.", file=sys.stderr)
+    _mpl_import_error = None
+except ImportError as e:
+    plt = None  # type: ignore[assignment]
+    _mpl_import_error = f"matplotlib: {e}"
+
+WORDCLOUD_AVAILABLE = (WordCloud is not None) and (plt is not None)
+if not WORDCLOUD_AVAILABLE:
+    missing = ", ".join(filter(None, [_wc_import_error, _mpl_import_error]))
+    print(
+        f"Word cloud generation disabled — missing packages: {missing}",
+        file=sys.stderr,
+    )
 
 # Optional: jieba for Chinese word segmentation
 try:
