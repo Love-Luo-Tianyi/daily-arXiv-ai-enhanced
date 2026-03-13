@@ -56,7 +56,27 @@ jobs:
       run: |
         git config --global user.email "${{ vars.EMAIL }}"
         git config --global user.name "${{ vars.NAME }}"
-        git add data/monthly/ assets/wordcloud-*.png
+
+        # Update reports-list.json
+        python3 -c "
+import os, json
+
+def list_reports(path, ext='.md'):
+    if not os.path.isdir(path):
+        return []
+    return sorted([f for f in os.listdir(path) if f.endswith(ext) and f != '.gitkeep'], reverse=True)
+
+weekly = list_reports('data/weekly')
+monthly = list_reports('data/monthly')
+wordclouds = list_reports('assets', '.png')
+wordclouds = [f for f in wordclouds if f.startswith('wordcloud-')]
+data = {'weekly': weekly, 'monthly': monthly, 'wordclouds': wordclouds}
+with open('assets/reports-list.json', 'w') as f:
+    json.dump(data, f, indent=2)
+print('reports-list.json updated')
+"
+
+        git add data/monthly/ assets/wordcloud-*.png assets/reports-list.json
         if git diff --staged --quiet; then
           echo "No new monthly review to commit"
           exit 0

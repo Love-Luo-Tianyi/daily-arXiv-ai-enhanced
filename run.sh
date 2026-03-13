@@ -147,6 +147,25 @@ echo "步骤5：更新文件列表... / Step 5: Updating file list..."
 ls data/*.jsonl | sed 's|data/||' > assets/file-list.txt
 echo "✅ 文件列表更新完成 / File list updated"
 
+# 更新报告列表 / Update reports list
+python3 -c "
+import os, json
+
+def list_reports(path, ext='.md'):
+    if not os.path.isdir(path):
+        return []
+    return sorted([f for f in os.listdir(path) if f.endswith(ext) and f != '.gitkeep'], reverse=True)
+
+weekly = list_reports('data/weekly')
+monthly = list_reports('data/monthly')
+wordclouds = list_reports('assets', '.png')
+wordclouds = [f for f in wordclouds if f.startswith('wordcloud-')]
+data = {'weekly': weekly, 'monthly': monthly, 'wordclouds': wordclouds}
+with open('assets/reports-list.json', 'w') as f:
+    json.dump(data, f, indent=2)
+print('reports-list.json updated')
+" && echo "✅ 报告列表更新完成 / Reports list updated" || echo "⚠️ 报告列表更新失败 / Reports list update failed"
+
 # 完成总结 / Completion summary
 echo ""
 echo "=== 本地调试完成 / Local Debug Completed ==="
