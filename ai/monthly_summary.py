@@ -212,6 +212,20 @@ def _tokenize(text: str, language: str) -> str:
         return ' '.join(words)
 
 
+def _get_cjk_font_path(language: str):
+    """Return a path to a CJK-capable font for the given language, or None."""
+    lang = language.lower()
+    if lang == 'chinese' or lang.startswith('zh'):
+        potential_fonts = [
+            "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+            "/usr/share/fonts/truetype/wqy/wqy-microhei.ttc",
+        ]
+        for f in potential_fonts:
+            if os.path.exists(f):
+                return f
+    return None
+
+
 def generate_wordcloud(texts: List[str], output_path: str, language: str) -> bool:
     """Generate a word cloud image and save it. Returns True on success."""
     if not WORDCLOUD_AVAILABLE:
@@ -220,16 +234,22 @@ def generate_wordcloud(texts: List[str], output_path: str, language: str) -> boo
     tokenized = _tokenize(combined, language)
     if not tokenized.strip():
         return False
+
+    font_path = _get_cjk_font_path(language)
+
     try:
-        wc = WordCloud(
-            width=1200,
-            height=600,
-            background_color='white',
-            max_words=150,
-            colormap='viridis',
-            prefer_horizontal=0.85,
-            collocations=False,
-        )
+        wc_kwargs = {
+            'width': 1200,
+            'height': 600,
+            'background_color': 'white',
+            'max_words': 150,
+            'colormap': 'viridis',
+            'prefer_horizontal': 0.85,
+            'collocations': False,
+        }
+        if font_path:
+            wc_kwargs['font_path'] = font_path
+        wc = WordCloud(**wc_kwargs)
         wc.generate(tokenized)
         fig, ax = plt.subplots(figsize=(14, 7))
         ax.imshow(wc, interpolation='bilinear')
