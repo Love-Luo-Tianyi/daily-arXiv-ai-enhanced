@@ -92,9 +92,7 @@ async function loadReport(filename) {
         // Configure marked with GFM (GitHub Flavored Markdown) and tables
         marked.use({
             gfm: true,
-            breaks: false,
-            mangle: false,
-            headerIds: false
+            breaks: false
         });
 
         const html = marked.parse(markdown);
