@@ -653,7 +653,7 @@ async function loadPapersByDate(date) {
   container.innerHTML = `
     <div class="loading-container">
       <div class="loading-spinner"></div>
-      <p>Loading paper...</p>
+      <p>正在加载论文...</p>
     </div>
   `;
   
@@ -665,7 +665,7 @@ async function loadPapersByDate(date) {
       if (response.status === 404) {
         container.innerHTML = `
           <div class="loading-container">
-            <p>No papers found for this date.</p>
+            <p>当前日期无论文数据。</p>
           </div>
         `;
         paperData = {};
@@ -679,7 +679,7 @@ async function loadPapersByDate(date) {
     if (!text || text.trim() === '') {
       container.innerHTML = `
         <div class="loading-container">
-          <p>No papers found for this date.</p>
+          <p>当前日期无论文数据。</p>
         </div>
       `;
       paperData = {};
@@ -698,8 +698,8 @@ async function loadPapersByDate(date) {
     console.error('加载论文数据失败:', error);
     container.innerHTML = `
       <div class="loading-container">
-        <p>Loading data fails. Please retry.</p>
-        <p>Error messages: ${error.message}</p>
+        <p>加载数据失败，请重试。</p>
+        <p>错误信息：${error.message}</p>
       </div>
     `;
   }
@@ -1227,24 +1227,24 @@ function showPaperDetails(paper, paperIndex) {
     <div class="paper-details ${matchedPaperClass}">
       <p><strong>Authors: </strong>${highlightedAuthors}</p>
       <p><strong>Categories: </strong>${categoryDisplay}</p>
-      <p><strong>Date: </strong>${formatDate(paper.date)}</p>
+      <p><strong>日期：</strong>${formatDate(paper.date)}</p>
       
       
-      <h3>TL;DR</h3>
+      <h3>简要概述</h3>
       <p>${highlightedSummary}</p>
       
       <div class="paper-sections">
-        ${paper.motivation ? `<div class="paper-section"><h4>Motivation</h4><p>${highlightedMotivation}</p></div>` : ''}
-        ${paper.method ? `<div class="paper-section"><h4>Method</h4><p>${highlightedMethod}</p></div>` : ''}
-        ${paper.result ? `<div class="paper-section"><h4>Result</h4><p>${highlightedResult}</p></div>` : ''}
-        ${paper.conclusion ? `<div class="paper-section"><h4>Conclusion</h4><p>${highlightedConclusion}</p></div>` : ''}
+        ${paper.motivation ? `<div class="paper-section"><h4>动机</h4><p>${highlightedMotivation}</p></div>` : ''}
+        ${paper.method ? `<div class="paper-section"><h4>方法</h4><p>${highlightedMethod}</p></div>` : ''}
+        ${paper.result ? `<div class="paper-section"><h4>结果</h4><p>${highlightedResult}</p></div>` : ''}
+        ${paper.conclusion ? `<div class="paper-section"><h4>结论</h4><p>${highlightedConclusion}</p></div>` : ''}
       </div>
       
-      ${highlightedAbstract ? `<h3>Abstract</h3><p class="original-abstract">${highlightedAbstract}</p>` : ''}
+      ${highlightedAbstract ? `<h3>原文摘要</h3><p class="original-abstract">${highlightedAbstract}</p>` : ''}
       
       <div class="pdf-preview-section">
         <div class="pdf-header">
-          <h3>PDF Preview</h3>
+          <h3>PDF 预览</h3>
           <button class="pdf-expand-btn" onclick="togglePdfSize(this)">
             <svg class="expand-icon" viewBox="0 0 24 24" width="24" height="24">
               <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
@@ -1408,7 +1408,7 @@ async function loadPapersByDateRange(startDate, endDate) {
   container.innerHTML = `
     <div class="loading-container">
       <div class="loading-spinner"></div>
-      <p>Loading papers from ${formatDate(startDate)} to ${formatDate(endDate)}...</p>
+      <p>正在加载 ${formatDate(startDate)} 至 ${formatDate(endDate)} 的论文数据...</p>
     </div>
   `;
   
@@ -1442,8 +1442,8 @@ async function loadPapersByDateRange(startDate, endDate) {
     console.error('加载论文数据失败:', error);
     container.innerHTML = `
       <div class="loading-container">
-        <p>Loading data fails. Please retry.</p>
-        <p>Error messages: ${error.message}</p>
+        <p>加载数据失败，请重试。</p>
+        <p>错误信息：${error.message}</p>
       </div>
     `;
   }

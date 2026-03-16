@@ -6,26 +6,6 @@ let isRangeMode = false;
 let allPapersData = [];
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Check screen size
-  const checkScreenSize = () => {
-    if (window.innerWidth < 768) {
-      const warningModal = document.createElement('div');
-      warningModal.className = 'screen-size-warning';
-      warningModal.innerHTML = `
-        <div class="warning-content">
-          <h3>⚠️ Screen Size Notice</h3>
-          <p>We've detected that you're using a device with a small screen. For the best data visualization experience, we recommend viewing this statistics page on a larger screen device (such as a tablet or computer).</p>
-          <button onclick="this.parentElement.parentElement.remove()">Got it</button>
-        </div>
-      `;
-      document.body.appendChild(warningModal);
-    }
-  };
-
-  checkScreenSize();
-  // Recheck on window resize
-  window.addEventListener('resize', checkScreenSize);
-
   initEventListeners();
   fetchGitHubStats();
   
@@ -273,7 +253,7 @@ async function loadPapersByDateRange(startDate, endDate) {
   container.innerHTML = `
     <div class="loading-container">
       <div class="loading-spinner"></div>
-      <p>Loading papers from ${formatDate(startDate)} to ${formatDate(endDate)}...</p>
+      <p>正在加载 ${formatDate(startDate)} 至 ${formatDate(endDate)} 的论文数据...</p>
     </div>
   `;
   
@@ -703,8 +683,8 @@ async function loadPapersByDateRange(startDate, endDate) {
     console.error('加载论文数据失败:', error);
     container.innerHTML = `
       <div class="loading-container">
-        <p>Loading data fails. Please retry.</p>
-        <p>Error messages: ${error.message}</p>
+        <p>加载数据失败，请重试。</p>
+        <p>错误信息：${error.message}</p>
       </div>
     `;
   }
