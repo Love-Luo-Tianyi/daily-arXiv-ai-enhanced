@@ -1292,7 +1292,7 @@ input:checked + .toggle-slider:before {
 
   .nav-link-button {
     padding: 7px;
-    border-radius: 50%;
+    border-radius: 8px;
   }
 
   /* 移动端缩小 logo 图片 */
