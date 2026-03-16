@@ -194,6 +194,77 @@ _STOP_WORDS = {
     '进行', '通过', '以', '并', '能够', '提出', '方法', '模型', '论文',
 }
 
+_AI_FILTER_SYSTEM = (
+    "You are a language expert. Your task is to identify semantically meaningless or "
+    "overly generic words from a word list used to generate a research paper word cloud. "
+    "Meaningless words include: measure words, quantifiers, conjunctions, prepositions, "
+    "articles, generic descriptors (e.g., '一种', '一个', '一类', '某种', '多个', '各种', "
+    "'相关', '基于', '通过', '利用', '实现', '研究', '分析', '结果', '方面', '问题', "
+    "'系统', '过程', '情况', '因此', '然而', '同时', '对于', '由于', '不同', '主要', "
+    "'具有', '可以', '需要', '进一步', '有效', '提高', '工作'), "
+    "as well as English generic words like 'significant', 'various', 'important', "
+    "'results', 'study', 'work', 'using', 'based', 'improve', 'show', 'demonstrate'. "
+    "Return ONLY a JSON object with the key 'remove' containing a list of words to remove."
+)
+
+_AI_FILTER_TEMPLATE = """\
+Below is a list of tokenized words that will be used to generate a word cloud for \
+research papers. Please identify words that are semantically meaningless, too generic, \
+or add no research value. Return ONLY valid JSON: {{"remove": ["word1", "word2", ...]}}
+
+Words (sample, up to 200):
+{word_sample}
+"""
+
+
+def filter_wordcloud_tokens_with_ai(tokenized_text: str, model_name: str) -> str:
+    """Use LLM to filter out semantically meaningless words from tokenized word cloud text.
+
+    Args:
+        tokenized_text: Space-separated tokenized text.
+        model_name: LLM model name to use.
+
+    Returns:
+        Filtered tokenized text with meaningless words removed.
+    """
+    words = tokenized_text.split()
+    if not words:
+        return tokenized_text
+
+    # Get unique words sorted by frequency (most common first) for the sample
+    from collections import Counter
+    word_freq = Counter(words)
+    # Sample top 200 unique words by frequency for LLM review
+    unique_words = [w for w, _ in word_freq.most_common(200)]
+
+    word_sample = '\n'.join(unique_words)
+    try:
+        llm = ChatOpenAI(model=model_name)
+        response = llm.invoke([
+            {"role": "system", "content": _AI_FILTER_SYSTEM},
+            {"role": "user", "content": _AI_FILTER_TEMPLATE.format(
+                word_sample=word_sample,
+            )},
+        ])
+        content = response.content.strip()
+        # Handle markdown code blocks
+        if content.startswith("```"):
+            content = content.split("```")[1]
+            if content.startswith("json"):
+                content = content[4:]
+            content = content.strip()
+        result = json.loads(content)
+        words_to_remove = set(result.get("remove", []))
+        if words_to_remove:
+            print(f"AI word cloud filter: removing {len(words_to_remove)} meaningless words: "
+                  f"{list(words_to_remove)[:20]}", file=sys.stderr)
+            filtered_words = [w for w in words if w not in words_to_remove]
+            return ' '.join(filtered_words)
+    except Exception as e:
+        print(f"AI word cloud filter error (using original): {e}", file=sys.stderr)
+
+    return tokenized_text
+
 
 def _tokenize(text: str, language: str) -> str:
     """Tokenize text for word cloud generation."""
@@ -226,12 +297,20 @@ def _get_cjk_font_path(language: str):
     return None
 
 
-def generate_wordcloud(texts: List[str], output_path: str, language: str) -> bool:
+def generate_wordcloud(texts: List[str], output_path: str, language: str,
+                       model_name: str = "") -> bool:
     """Generate a word cloud image and save it. Returns True on success."""
     if not WORDCLOUD_AVAILABLE:
         return False
     combined = ' '.join(texts)
     tokenized = _tokenize(combined, language)
+    if not tokenized.strip():
+        return False
+
+    # Apply AI-based filtering to remove meaningless words
+    if model_name:
+        print("Applying AI filter to word cloud tokens...", file=sys.stderr)
+        tokenized = filter_wordcloud_tokens_with_ai(tokenized, model_name)
     if not tokenized.strip():
         return False
 
@@ -486,7 +565,7 @@ def main():
     wc_filename = f"wordcloud-{month_label}.png"
     wc_abs_path = os.path.join(args.asset_dir, wc_filename)
     texts_for_wc = stats['all_titles'] + stats['all_tldrs']
-    wc_ok = generate_wordcloud(texts_for_wc, wc_abs_path, language)
+    wc_ok = generate_wordcloud(texts_for_wc, wc_abs_path, language, model_name)
     wordcloud_rel_path = ""
     if wc_ok:
         print(f"Word cloud saved to {wc_abs_path}", file=sys.stderr)

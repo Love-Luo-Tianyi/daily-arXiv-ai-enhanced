@@ -3,6 +3,12 @@ let reportsData = { weekly: [], monthly: [], wordclouds: [] };
 let selectedReport = null;
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Check URL param for initial tab
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam = urlParams.get('tab');
+    if (tabParam === 'monthly' || tabParam === 'weekly') {
+        currentTab = tabParam;
+    }
     fetchGitHubStats();
     loadReportsList();
     initTabs();
@@ -35,7 +41,13 @@ async function loadReportsList() {
 }
 
 function initTabs() {
+    // Set initial active tab button
     document.querySelectorAll('.tab-button').forEach(btn => {
+        if (btn.dataset.tab === currentTab) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
         btn.addEventListener('click', () => {
             if (btn.dataset.tab === currentTab) return;
             currentTab = btn.dataset.tab;
