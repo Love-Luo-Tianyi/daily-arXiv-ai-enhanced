@@ -1268,13 +1268,12 @@ input:checked + .toggle-slider:before {
 
 @media (max-width: 768px) {
   .header-content {
-    padding: 12px 16px;
+    padding: 10px 14px;
   }
   
   .header-center {
     position: static;
     transform: none;
-    margin-bottom: 8px;
   }
   
   .header-left {
@@ -1283,6 +1282,30 @@ input:checked + .toggle-slider:before {
   
   .header-controls {
     margin-left: auto;
+    gap: 8px;
+  }
+
+  /* 移动端导航按钮只显示图标，隐藏文字 */
+  .nav-link-button span {
+    display: none;
+  }
+
+  .nav-link-button {
+    padding: 7px;
+    border-radius: 8px;
+  }
+
+  /* 移动端缩小 logo 图片 */
+  .logo-image {
+    height: 28px;
+  }
+
+  .site-title {
+    font-size: 15px;
+  }
+
+  .date-display {
+    font-size: 13px;
   }
   
   .category-scroll {
