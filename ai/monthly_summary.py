@@ -216,6 +216,10 @@ Words (sample, up to 200):
 {word_sample}
 """
 
+# Maximum number of unique words (by frequency) sent to the LLM for review.
+# 200 covers the most impactful words without exceeding typical context limits.
+_AI_FILTER_WORD_SAMPLE_SIZE = 200
+
 
 def filter_wordcloud_tokens_with_ai(tokenized_text: str, model_name: str) -> str:
     """Use LLM to filter out semantically meaningless words from tokenized word cloud text.
@@ -234,8 +238,7 @@ def filter_wordcloud_tokens_with_ai(tokenized_text: str, model_name: str) -> str
     # Get unique words sorted by frequency (most common first) for the sample
     from collections import Counter
     word_freq = Counter(words)
-    # Sample top 200 unique words by frequency for LLM review
-    unique_words = [w for w, _ in word_freq.most_common(200)]
+    unique_words = [w for w, _ in word_freq.most_common(_AI_FILTER_WORD_SAMPLE_SIZE)]
 
     word_sample = '\n'.join(unique_words)
     try:
@@ -247,12 +250,14 @@ def filter_wordcloud_tokens_with_ai(tokenized_text: str, model_name: str) -> str
             )},
         ])
         content = response.content.strip()
-        # Handle markdown code blocks
+        # Handle markdown code blocks returned by some LLMs
         if content.startswith("```"):
-            content = content.split("```")[1]
-            if content.startswith("json"):
-                content = content[4:]
-            content = content.strip()
+            parts = content.split("```")
+            if len(parts) >= 2:
+                content = parts[1]
+                if content.startswith("json"):
+                    content = content[4:]
+                content = content.strip()
         result = json.loads(content)
         words_to_remove = set(result.get("remove", []))
         if words_to_remove:

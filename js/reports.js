@@ -3,12 +3,10 @@ let reportsData = { weekly: [], monthly: [], wordclouds: [] };
 let selectedReport = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Check URL param for initial tab
+    // Check URL param for initial tab; default to 'weekly' for any unknown value
     const urlParams = new URLSearchParams(window.location.search);
     const tabParam = urlParams.get('tab');
-    if (tabParam === 'monthly' || tabParam === 'weekly') {
-        currentTab = tabParam;
-    }
+    currentTab = (tabParam === 'monthly' || tabParam === 'weekly') ? tabParam : 'weekly';
     fetchGitHubStats();
     loadReportsList();
     initTabs();
