@@ -52,13 +52,13 @@ An automated arXiv tracking system powered by **GitHub Actions + GitHub Pages**.
 
 `arXiv -> raw JSONL -> dedup -> AI enhancement -> Markdown/Reports -> Git commit -> GitHub Pages`
 
-对应实现：
-- 抓取： `daily_arxiv/daily_arxiv/spiders/arxiv.py`
-- 去重： `daily_arxiv/daily_arxiv/check_stats.py`
-- AI 增强： `ai/enhance.py`
-- 日报转换： `to_md/convert.py`
-- 周报： `ai/weekly_summary.py`
-- 月报： `ai/monthly_summary.py`
+对应实现 / Implementation mapping:
+- 抓取 / Crawl: `daily_arxiv/daily_arxiv/spiders/arxiv.py`
+- 去重 / Dedup: `daily_arxiv/daily_arxiv/check_stats.py`
+- AI 增强 / AI enhancement: `ai/enhance.py`
+- 日报转换 / Daily markdown conversion: `to_md/convert.py`
+- 周报 / Weekly summary: `ai/weekly_summary.py`
+- 月报 / Monthly summary: `ai/monthly_summary.py`
 
 ### 2) 自动化工作流 | GitHub Actions Workflows
 
@@ -117,7 +117,8 @@ Add the following Secrets to enable daily email notifications:
 - `SMTP_SERVER`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`
 - `EMAIL_SENDER`, `EMAIL_RECIPIENTS`
 
-可选 Variable：`GITHUB_PAGES_URL`
+可选 Variable：`GITHUB_PAGES_URL`（邮件中展示的站点完整链接）  
+Optional variable: `GITHUB_PAGES_URL` (full site URL used in email links)
 
 ---
 
