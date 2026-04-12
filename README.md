@@ -1,153 +1,141 @@
-# 🚀 daily-arXiv-ai-enhanced
+# daily-arXiv-ai-enhanced
 
 > [!CAUTION]
-> 若您所在法域对学术数据有审查要求，谨慎运行本代码；任何二次分发版本必须履行合规审查（包括但不限于原始论文合规性、AI合规性）义务，否则一切法律后果由下游自行承担。
+> **中文**：请确保你在所在法域合规使用学术数据与 AI 生成内容。  
+> **English**: Ensure compliant use of academic data and AI-generated content in your jurisdiction.
 
-> [!CAUTION]
-> If your jurisdiction has censorship requirements for academic data, run this code with caution; any secondary distribution version must remove the entrance accessible to China and fulfill the content review obligations, otherwise all legal consequences will be borne by the downstream.
+一个基于 **GitHub Actions + GitHub Pages** 的 arXiv 自动追踪系统。  
+An automated arXiv tracking system powered by **GitHub Actions + GitHub Pages**.
 
+- 每日抓取指定分类论文并生成 AI 结构化摘要  
+  Daily crawl for selected categories with AI-structured summaries
+- 自动产出日报、周报、月报（含趋势与词云）  
+  Auto-generated daily/weekly/monthly reports (with trend analysis and wordclouds)
+- 前端纯静态部署，支持偏好高亮、日期范围筛选、可选访问密码  
+  Static frontend with preference highlighting, date-range filtering, and optional password protection
 
-This innovative tool transforms how you stay updated with arXiv papers by combining automated crawling with AI-powered summarization.
+---
 
+## 功能概览 | Features
 
-## ✨ Key Features
+1. **Daily Pipeline（日更）**
+   - 抓取 arXiv 新论文（分类可配置）  
+     Crawl new arXiv papers (configurable categories)
+   - 去重（对比最近 7 天）  
+     Deduplicate against recent 7 days
+   - LLM 结构化增强（TLDR / Motivation / Method / Result / Conclusion）  
+     LLM enhancement with structured fields
+   - 生成 Markdown 与 JSONL 数据并发布到 Pages  
+     Generate Markdown + JSONL and publish via Pages
 
-🎯 **Zero Infrastructure Required**
-- Leverages GitHub Actions and Pages - no server needed
-- Completely free to deploy and use
+2. **Weekly Report（周报）**
+   - MapReduce 思路提取主题、聚合热点并生成周度分析  
+     MapReduce-style topic extraction and weekly trend summary
 
-🤖 **Smart AI Summarization**
-- Daily paper crawling with DeepSeek-powered summaries
-- Cost-effective: Only ~0.2 CNY per day
+3. **Monthly Report（月报）**
+   - 汇总月度数据，生成趋势综述与词云  
+     Monthly trend review with wordcloud visualization
 
-💫 **Smart Reading Experience**
-- Personalized paper highlighting based on your interests
-- Cross-device compatibility (desktop & mobile)
-- Local preference storage for privacy
-- Flexible date range filtering
+4. **Reading Experience（阅读体验）**
+   - 本地存储关键词/作者偏好并高亮  
+     Local keyword/author preferences with highlighting
+   - 单日/区间日期浏览  
+     Single-date and date-range browsing
+   - 可选密码访问控制与邮件通知  
+     Optional password protection and email notification
 
-👉 **[Try it now!](https://dw-dengwei.github.io/daily-arXiv-ai-enhanced/)** - No installation required
+---
 
+## 工作原理 | How It Works
 
+### 1) 数据与处理流程 | Data & Processing Flow
 
-https://github.com/user-attachments/assets/b25712a4-fb8d-484f-863d-e8da6922f9d7
+`arXiv -> raw JSONL -> dedup -> AI enhancement -> Markdown/Reports -> Git commit -> GitHub Pages`
 
+对应实现 / Implementation mapping:
+- 抓取 / Crawl: `daily_arxiv/daily_arxiv/spiders/arxiv.py`
+- 去重 / Dedup: `daily_arxiv/daily_arxiv/check_stats.py`
+- AI 增强 / AI enhancement: `ai/enhance.py`
+- 日报转换 / Daily markdown conversion: `to_md/convert.py`
+- 周报 / Weekly summary: `ai/weekly_summary.py`
+- 月报 / Monthly summary: `ai/monthly_summary.py`
 
+### 2) 自动化工作流 | GitHub Actions Workflows
 
+- `.github/workflows/run.yml`：每日主流程（抓取 -> 去重 -> AI -> 转换 -> 提交 -> 推送 -> 可选邮件）
+- `.github/workflows/weekly.yml`：每周自动生成周报
+- `.github/workflows/monthly.yml`：每月自动生成月报和词云
+- `.github/workflows/test-email.yml`：手动测试邮件发送
 
-# How to use
-This repo will daily crawl arXiv papers about **cs.CV, cs.GR, cs.CL and cs.AI**, and use **DeepSeek** to summarize the papers in **Chinese**.
-If you wish to crawl other arXiv categories, use other LLMs, or other languages, please follow the instructions.
-Otherwise, you can directly use this repo in https://dw-dengwei.github.io/daily-arXiv-ai-enhanced/. Please star it if you like :)
+### 3) 前端读取机制 | Frontend Delivery
 
-**Instructions:**
-1. Fork this repo to your own account and delete my own information in [by-me-a-coffee](./buy-me-a-coffee/README.md).
-2. Go to: your-own-repo -> Settings -> Secrets and variables -> Actions
-3. Go to Secrets. Secrets are encrypted and used for sensitive data
-4. Create two repository secrets named `OPENAI_API_KEY` and `OPENAI_BASE_URL`, and input corresponding values.
-5. [Optional] Set a password in `secrets.ACCESS_PASSWORD` if you do not wish others to access your page. (see https://github.com/dw-dengwei/daily-arXiv-ai-enhanced/pull/64)
-6. Go to Variables. Variables are shown as plain text and are used for non-sensitive data
-7. Create the following repository variables:
-   1. `CATEGORIES`: separate the categories with ",", such as "cs.CL, cs.CV"
-   2. `LANGUAGE`: such as "Chinese" or "English"
-   3. `MODEL_NAME`: such as "deepseek-chat"
-   4. `EMAIL`: your email for push to GitHub
-   5. `NAME`: your name for push to GitHub
-8. Go to your-own-repo -> Actions -> arXiv-daily-ai-enhanced
-9. You can manually click **Run workflow** to test if it works well (it may take about one hour). By default, this action will automatically run every day. You can modify it in `.github/workflows/run.yml`
-10. Set up GitHub pages: Go to your own repo -> Settings -> Pages. In `Build and deployment`, set `Source="Deploy from a branch"`, `Branch="main", "/(root)"`. Wait for a few minutes, go to https://\<username\>.github.io/daily-arXiv-ai-enhanced/. Please see this [issue](https://github.com/dw-dengwei/daily-arXiv-ai-enhanced/issues/14) for more precise instructions.
+- 页面从 `data/` 读取 JSONL/Markdown
+- 从 `assets/file-list.txt` 与 `assets/reports-list.json` 获取可用日期与报告列表
+- 在浏览器侧完成筛选、高亮、展示（无需后端）
 
-## 📧 Email Notification (Optional)
+---
 
-You can configure the workflow to send a daily email reminder with a link to your GitHub Pages site.
+## 快速开始 | Quick Start
 
-**Step 1 – Add the following Secrets** (`Settings → Secrets and variables → Actions → Secrets`):
+1. **Fork 仓库** / Fork this repository
+2. 在 `Settings -> Secrets and variables -> Actions` 配置 Secrets 与 Variables  
+   Configure required Secrets and Variables
+3. 在 Actions 中手动运行 `arXiv-daily-ai-enhanced` 验证流程  
+   Run `arXiv-daily-ai-enhanced` manually once
+4. 在 `Settings -> Pages` 启用 Pages（`main` / root）  
+   Enable GitHub Pages (`main` / root)
 
-| Secret | Description |
+---
+
+## 必需配置 | Required Configuration
+
+### Secrets
+
+| Name | 说明 / Description |
 |---|---|
-| `SMTP_SERVER` | SMTP server hostname, e.g. `smtp.gmail.com` |
-| `SMTP_PORT` | SMTP port, e.g. `587` (STARTTLS) |
-| `SMTP_USERNAME` | Login username for the SMTP server |
-| `SMTP_PASSWORD` | Login password or app-specific password |
-| `EMAIL_SENDER` | The "From" address, e.g. `you@gmail.com` |
-| `EMAIL_RECIPIENTS` | Comma-separated recipient addresses, e.g. `a@x.com,b@x.com` |
+| `OPENAI_API_KEY` | LLM API Key |
+| `OPENAI_BASE_URL` | LLM Base URL |
+| `ACCESS_PASSWORD` *(optional)* | 站点访问密码（可选）/ Optional site password |
 
-**Step 2 – Add the following Variable** (`Settings → Secrets and variables → Actions → Variables`):
+### Variables
 
-| Variable | Description |
+| Name | 说明 / Description |
 |---|---|
-| `GITHUB_PAGES_URL` | Full URL of your GitHub Pages site, e.g. `https://<username>.github.io/daily-arXiv-ai-enhanced/` |
+| `CATEGORIES` | arXiv 分类，如 `cs.CL,cs.CV` |
+| `LANGUAGE` | 输出语言，如 `Chinese` / `English` |
+| `MODEL_NAME` | 模型名，如 `deepseek-chat` |
+| `EMAIL` | Git 提交邮箱 |
+| `NAME` | Git 提交用户名 |
+| `GITHUB_PAGES_URL` *(optional)* | 邮件中使用的站点完整 URL（可选） |
 
-Once configured, the workflow will automatically send a beautifully formatted HTML email each day after new paper summaries are published.
+---
 
-> **Gmail users:** Enable 2-Step Verification and create an [App Password](https://myaccount.google.com/apppasswords) to use as `SMTP_PASSWORD`.
->
-> **Note:** If the email secrets are not configured, the workflow will skip the email step without failing.
+## 邮件通知（可选）| Email Notification (Optional)
 
-# Plans
-See https://github.com/users/dw-dengwei/projects/3
+再配置以下 Secrets 可启用每日邮件推送：  
+Add the following Secrets to enable daily email notifications:
 
-# Contributors
-Thanks to the following special contributors for contributing code, discovering bugs, and sharing useful ideas for this project!!!
-<table>
-  <tbody>
-    <tr>
-      <td align="center" valign="top">
-        <a href="https://github.com/JianGuanTHU"><img src="https://avatars.githubusercontent.com/u/44895708?v=4" width="100px;" alt="JianGuanTHU"/><br /><sub><b>JianGuanTHU</b></sub></a><br />
-      </td>
-      <td align="center" valign="top">
-        <a href="https://github.com/Chi-hong22"><img src="https://avatars.githubusercontent.com/u/75403952?v=4" width="100px;" alt="Chi-hong22"/><br /><sub><b>Chi-hong22</b></sub></a><br />
-      </td>
-      <td align="center" valign="top">
-        <a href="https://github.com/chaozg"><img src="https://avatars.githubusercontent.com/u/69794131?v=4" width="100px;" alt="chaozg"/><br /><sub><b>chaozg</b></sub></a><br />
-      </td>
-      <td align="center" valign="top">
-        <a href="https://github.com/quantum-ctrl"><img src="https://avatars.githubusercontent.com/u/16505311?v=4" width="100px;" alt="quantum-ctrl"/><br /><sub><b>quantum-ctrl</b></sub></a><br />
-      </td>
-      <td align="center" valign="top">
-        <a href="https://github.com/Zhao2z"><img src="https://avatars.githubusercontent.com/u/141019403?v=4" width="100px;" alt="Zhao2z"/><br /><sub><b>Zhao2z</b></sub></a><br />
-      </td>
-      <td align="center" valign="top">
-        <a href="https://github.com/eclipse0922"><img src="https://avatars.githubusercontent.com/u/6214316?v=4" width="100px;" alt="eclipse0922"/><br /><sub><b>eclipse0922</b></sub></a><br />
-      </td>
-    </tr>
+- `SMTP_SERVER`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`
+- `EMAIL_SENDER`, `EMAIL_RECIPIENTS`
 
+可选 Variable：`GITHUB_PAGES_URL`（邮件中展示的站点完整链接）  
+Optional variable: `GITHUB_PAGES_URL` (full site URL used in email links)
 
-  </tbody>
-  <tbody>
-   <tr>
-      <td align="center" valign="top">
-        <a href="https://github.com/xuemian168"><img src="https://avatars.githubusercontent.com/u/38741078?v=4" width="100px;" alt="xuemian168"/><br /><sub><b>xuemian168</b></sub></a><br />
-      </td>
-   </tr>
-  </tbody>
-</table>
+---
 
-# Acknowledgement
-We sincerely thank the following individuals and organizations for their promotion and support!!!
-<table>
-  <tbody>
-    <tr>
-      <td align="center" valign="top">
-        <a href="https://x.com/GitHub_Daily/status/1930610556731318781"><img src="https://pbs.twimg.com/profile_images/1660876795347111937/EIo6fIr4_400x400.jpg" width="100px;" alt="Github_Daily"/><br /><sub><b>Github_Daily</b></sub></a><br />
-      </td>
-      <td align="center" valign="top">
-        <a href="https://x.com/aigclink/status/1930897858963853746"><img src="https://pbs.twimg.com/profile_images/1729450995850027008/gllXr6bh_400x400.jpg" width="100px;" alt="AIGCLINK"/><br /><sub><b>AIGCLINK</b></sub></a><br />
-      </td>
-      <td align="center" valign="top">
-        <a href="https://www.ruanyifeng.com/blog/2025/06/weekly-issue-353.html"><img src="https://avatars.githubusercontent.com/u/905434" width="100px;" alt="阮一峰的网络日志"/><br /><sub><b>阮一峰的网络日志 <br> 科技爱好者周刊 <br> （第 353 期）</b></sub></a><br />
-      </td>
-      <td align="center" valign="top">
-        <a href="https://hellogithub.com/periodical/volume/111"><img src="https://github.com/user-attachments/assets/eff6b6dd-0323-40c4-9db6-444a51bbc80a" width="100px;" alt="《HelloGitHub》第 111 期"/><br /><sub><b>《HelloGitHub》<br> 月刊第 111 期</b></sub></a><br />
-      </td>
-    </tr>
-  </tbody>
-</table>
+## 自定义建议 | Customization
 
+- 调整分类：改 `CATEGORIES`  
+  Change categories via `CATEGORIES`
+- 切换语言：改 `LANGUAGE`  
+  Switch output language via `LANGUAGE`
+- 更换模型：改 `MODEL_NAME`  
+  Change model via `MODEL_NAME`
+- 调整调度：编辑 `.github/workflows/*.yml` 中 cron  
+  Adjust schedules by editing cron in `.github/workflows/*.yml`
 
-# Star history
+---
 
-[![Stargazers over time](https://starchart.cc/dw-dengwei/daily-arXiv-ai-enhanced.svg?variant=adaptive)](https://starchart.cc/dw-dengwei/daily-arXiv-ai-enhanced)
+## 许可 | License
 
-# Buy me a coffee
-[here](./buy-me-a-coffee/README.md)
+Apache-2.0
