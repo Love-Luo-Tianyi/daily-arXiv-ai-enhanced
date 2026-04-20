@@ -3,7 +3,6 @@
 > 一个基于 **GitHub Actions + GitHub Pages + LLM** 的 arXiv 自动追踪与智能解读系统。  
 > 每日自动抓取、去重、AI 增强、生成日报/周报/月报，并以纯静态站点发布。
 
-![logo](assets/logo2-white.png)
 
 ---
 
@@ -23,10 +22,6 @@
 ---
 
 ## 2. 页面效果（图文）
-
-### 首页
-
-![首页](images/ss_home.png)
 
 ### 论文看板（按分类浏览，支持关键词/作者高亮过滤）
 
