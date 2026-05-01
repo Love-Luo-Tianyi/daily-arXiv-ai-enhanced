@@ -11,10 +11,12 @@
     "2025-W12.md"
   ],
   "monthly": [
+    "2026-04.md",
     "2026-03.md",
     "2026-02.md"
   ],
   "wordclouds": [
+    "wordcloud-2026-04.png",
     "wordcloud-2026-03.png",
     "wordcloud-2026-02.png"
   ]
